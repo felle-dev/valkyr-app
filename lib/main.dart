@@ -6,6 +6,7 @@ import 'package:local_auth/local_auth.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'dart:convert';
 import 'dart:math';
+import 'dart:ui';
 
 void main() {
   runApp(const FasswordApp());
@@ -76,6 +77,67 @@ class SecureStorageService {
   }
 }
 
+// ==================== GLASSY CARD WIDGET ====================
+
+class GlassyCard extends StatelessWidget {
+  final Widget child;
+  final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry? margin;
+  final BorderRadius? borderRadius;
+  final VoidCallback? onTap;
+
+  const GlassyCard({
+    Key? key,
+    required this.child,
+    this.padding,
+    this.margin,
+    this.borderRadius,
+    this.onTap,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final effectiveBorderRadius = borderRadius ?? BorderRadius.circular(20);
+
+    return Container(
+      margin: margin,
+      decoration: BoxDecoration(
+        borderRadius: effectiveBorderRadius,
+        border: Border.all(
+          color: colorScheme.outline.withOpacity(0.2),
+          width: 1,
+        ),
+      ),
+      child: ClipRRect(
+        borderRadius: effectiveBorderRadius,
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Container(
+            decoration: BoxDecoration(
+              color: colorScheme.surfaceContainerHighest.withOpacity(0.7),
+              borderRadius: effectiveBorderRadius,
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: onTap != null
+                  ? InkWell(
+                      onTap: onTap,
+                      borderRadius: effectiveBorderRadius,
+                      child: Padding(
+                        padding: padding ?? EdgeInsets.zero,
+                        child: child,
+                      ),
+                    )
+                  : Padding(padding: padding ?? EdgeInsets.zero, child: child),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 // ==================== MAIN APP ====================
 
 class FasswordApp extends StatelessWidget {
@@ -95,9 +157,11 @@ class FasswordApp extends StatelessWidget {
         headlineSmall: TextStyle(fontFamily: 'NoyhR'),
         titleLarge: TextStyle(fontFamily: 'NoyhR'),
       ),
+      scaffoldBackgroundColor: colorScheme.surface,
       appBarTheme: AppBarTheme(
-        backgroundColor: colorScheme.surface,
+        backgroundColor: Colors.transparent,
         foregroundColor: colorScheme.onSurface,
+        elevation: 0,
         systemOverlayStyle: SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
           statusBarIconBrightness: brightness == Brightness.light
@@ -106,7 +170,7 @@ class FasswordApp extends StatelessWidget {
           statusBarBrightness: brightness == Brightness.light
               ? Brightness.light
               : Brightness.dark,
-          systemNavigationBarColor: colorScheme.surface,
+          systemNavigationBarColor: Colors.transparent,
           systemNavigationBarIconBrightness: brightness == Brightness.light
               ? Brightness.dark
               : Brightness.light,
@@ -115,11 +179,42 @@ class FasswordApp extends StatelessWidget {
       ),
       cardTheme: CardThemeData(
         elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        color: Colors.transparent,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
-      navigationBarTheme: const NavigationBarThemeData(
+      navigationBarTheme: NavigationBarThemeData(
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         elevation: 0,
+        backgroundColor: Colors.transparent,
+        indicatorColor: colorScheme.primaryContainer.withOpacity(0.5),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.5),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: colorScheme.outline.withOpacity(0.2)),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: colorScheme.outline.withOpacity(0.2)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: colorScheme.primary, width: 2),
+        ),
+      ),
+      searchBarTheme: SearchBarThemeData(
+        backgroundColor: WidgetStateProperty.all(
+          colorScheme.surfaceContainerHighest.withOpacity(0.7),
+        ),
+        elevation: WidgetStateProperty.all(0),
+        shape: WidgetStateProperty.all(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(28),
+            side: BorderSide(color: colorScheme.outline.withOpacity(0.2)),
+          ),
+        ),
       ),
     );
   }
@@ -259,10 +354,10 @@ class _AuthScreenState extends State<AuthScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: const EdgeInsets.all(24),
+                padding: const EdgeInsets.all(32),
                 decoration: BoxDecoration(
-                  color: colorScheme.primaryContainer,
                   shape: BoxShape.circle,
+                  color: colorScheme.primaryContainer,
                 ),
                 child: Icon(
                   Icons.lock_rounded,
@@ -274,7 +369,7 @@ class _AuthScreenState extends State<AuthScreen> {
               Text(
                 'Fassword',
                 style: TextStyle(
-                  fontSize: 32,
+                  fontSize: 40,
                   fontWeight: FontWeight.bold,
                   color: colorScheme.onSurface,
                 ),
@@ -446,8 +541,19 @@ class _HomeScreenState extends State<HomeScreen> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: const Text('Fassword'),
+        flexibleSpace: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(
+              decoration: BoxDecoration(
+                color: colorScheme.surface.withOpacity(0.7),
+              ),
+            ),
+          ),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.info_outline),
@@ -469,11 +575,13 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Column(
         children: [
+          SizedBox(height: MediaQuery.of(context).padding.top + 56),
           Padding(
             padding: const EdgeInsets.all(16),
             child: SearchBar(
               controller: _searchController,
               hintText: 'Search passwords',
+              leading: const Icon(Icons.search),
               trailing: _searchController.text.isNotEmpty
                   ? [
                       IconButton(
@@ -494,10 +602,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          Icons.lock_outline,
-                          size: 80,
-                          color: colorScheme.outline,
+                        Container(
+                          padding: const EdgeInsets.all(24),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: colorScheme.primaryContainer.withOpacity(
+                              0.3,
+                            ),
+                          ),
+                          child: Icon(
+                            Icons.lock_outline,
+                            size: 64,
+                            color: colorScheme.primary,
+                          ),
                         ),
                         const SizedBox(height: 24),
                         Text(
@@ -506,6 +623,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               : 'No results found',
                           style: TextStyle(
                             fontSize: 20,
+                            fontWeight: FontWeight.w600,
                             color: colorScheme.onSurface.withOpacity(0.7),
                           ),
                         ),
@@ -529,102 +647,101 @@ class _HomeScreenState extends State<HomeScreen> {
                           ? entry.website[0].toUpperCase()
                           : '?';
 
-                      return Card(
+                      return GlassyCard(
                         margin: const EdgeInsets.only(bottom: 12),
-                        elevation: 0,
-                        color: colorScheme.surfaceContainerHighest,
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(12),
-                          onTap: () => _showPasswordDetails(entry),
-                          child: Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: Row(
-                              children: [
-                                CircleAvatar(
-                                  radius: 24,
-                                  backgroundColor: colorScheme.primaryContainer,
-                                  child: Text(
-                                    initial,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20,
-                                      color: colorScheme.onPrimaryContainer,
-                                    ),
+                        padding: const EdgeInsets.all(16),
+                        onTap: () => _showPasswordDetails(entry),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 48,
+                              height: 48,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: colorScheme.primaryContainer,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  initial,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                    color: colorScheme.onPrimaryContainer,
                                   ),
                                 ),
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        entry.website,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 16,
-                                        ),
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    entry.website,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    entry.username,
+                                    style: TextStyle(
+                                      color: colorScheme.onSurface.withOpacity(
+                                        0.7,
                                       ),
-                                      const SizedBox(height: 4),
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            PopupMenuButton(
+                              icon: const Icon(Icons.more_vert),
+                              itemBuilder: (ctx) => [
+                                PopupMenuItem(
+                                  value: 'edit',
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.edit_outlined,
+                                        size: 20,
+                                        color: colorScheme.onSurface,
+                                      ),
+                                      const SizedBox(width: 12),
+                                      const Text('Edit'),
+                                    ],
+                                  ),
+                                ),
+                                PopupMenuItem(
+                                  value: 'delete',
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.delete_outline,
+                                        size: 20,
+                                        color: colorScheme.error,
+                                      ),
+                                      const SizedBox(width: 12),
                                       Text(
-                                        entry.username,
+                                        'Delete',
                                         style: TextStyle(
-                                          color: colorScheme.onSurface
-                                              .withOpacity(0.7),
-                                          fontSize: 14,
+                                          color: colorScheme.error,
                                         ),
                                       ),
                                     ],
                                   ),
                                 ),
-                                PopupMenuButton(
-                                  icon: const Icon(Icons.more_vert),
-                                  itemBuilder: (ctx) => [
-                                    PopupMenuItem(
-                                      value: 'edit',
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.edit_outlined,
-                                            size: 20,
-                                            color: colorScheme.onSurface,
-                                          ),
-                                          const SizedBox(width: 12),
-                                          const Text('Edit'),
-                                        ],
-                                      ),
-                                    ),
-                                    PopupMenuItem(
-                                      value: 'delete',
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.delete_outline,
-                                            size: 20,
-                                            color: colorScheme.error,
-                                          ),
-                                          const SizedBox(width: 12),
-                                          Text(
-                                            'Delete',
-                                            style: TextStyle(
-                                              color: colorScheme.error,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                  onSelected: (value) {
-                                    if (value == 'edit') {
-                                      _addOrEditPassword(entry);
-                                    } else if (value == 'delete') {
-                                      _deletePassword(entry);
-                                    }
-                                  },
-                                ),
                               ],
+                              onSelected: (value) {
+                                if (value == 'edit') {
+                                  _addOrEditPassword(entry);
+                                } else if (value == 'delete') {
+                                  _deletePassword(entry);
+                                }
+                              },
                             ),
-                          ),
+                          ],
                         ),
                       );
                     },
@@ -644,6 +761,7 @@ class _HomeScreenState extends State<HomeScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      backgroundColor: Colors.transparent,
       builder: (ctx) => PasswordDetailsSheet(
         entry: entry,
         onEdit: () {
@@ -706,123 +824,149 @@ class _PasswordDetailsSheetState extends State<PasswordDetailsSheet> {
       minChildSize: 0.5,
       maxChildSize: 0.95,
       expand: false,
-      builder: (_, controller) => Container(
-        decoration: BoxDecoration(
-          color: colorScheme.surface,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-        ),
-        child: ListView(
-          controller: controller,
-          padding: const EdgeInsets.all(24),
-          children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: colorScheme.onSurface.withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(2),
+      builder: (_, controller) => ClipRRect(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Container(
+            decoration: BoxDecoration(
+              color: colorScheme.surface.withOpacity(0.95),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(28),
+              ),
+              border: Border(
+                top: BorderSide(
+                  color: colorScheme.outline.withOpacity(0.2),
+                  width: 1,
                 ),
               ),
             ),
-            const SizedBox(height: 24),
-            Center(
-              child: CircleAvatar(
-                radius: 40,
-                backgroundColor: colorScheme.primaryContainer,
-                child: Text(
-                  initial,
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: colorScheme.onPrimaryContainer,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              widget.entry.website,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 32),
-            _buildDetailCard(
-              context,
-              icon: Icons.person_outline,
-              label: 'Username',
-              value: widget.entry.username,
-              onCopy: () => _copyToClipboard(widget.entry.username, 'Username'),
-            ),
-            const SizedBox(height: 12),
-            _buildDetailCard(
-              context,
-              icon: Icons.lock_outline,
-              label: 'Password',
-              value: _showPassword ? widget.entry.password : '••••••••••••',
-              onCopy: () => _copyToClipboard(widget.entry.password, 'Password'),
-              trailing: IconButton(
-                icon: Icon(
-                  _showPassword
-                      ? Icons.visibility_off_outlined
-                      : Icons.visibility_outlined,
-                ),
-                onPressed: () => setState(() => _showPassword = !_showPassword),
-              ),
-            ),
-            if (widget.entry.notes.isNotEmpty) ...[
-              const SizedBox(height: 12),
-              _buildDetailCard(
-                context,
-                icon: Icons.notes_outlined,
-                label: 'Notes',
-                value: widget.entry.notes,
-              ),
-            ],
-            const SizedBox(height: 24),
-            Text(
-              'Created: ${_formatDate(widget.entry.createdAt)}',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: colorScheme.onSurface.withOpacity(0.6),
-                fontSize: 12,
-              ),
-            ),
-            Text(
-              'Updated: ${_formatDate(widget.entry.updatedAt)}',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: colorScheme.onSurface.withOpacity(0.6),
-                fontSize: 12,
-              ),
-            ),
-            const SizedBox(height: 24),
-            Row(
+            child: ListView(
+              controller: controller,
+              padding: const EdgeInsets.all(24),
               children: [
-                Expanded(
-                  child: FilledButton.tonalIcon(
-                    onPressed: widget.onEdit,
-                    icon: const Icon(Icons.edit),
-                    label: const Text('Edit'),
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: colorScheme.onSurface.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: widget.onDelete,
-                    icon: Icon(Icons.delete, color: colorScheme.error),
-                    label: Text(
-                      'Delete',
-                      style: TextStyle(color: colorScheme.error),
+                const SizedBox(height: 24),
+                Center(
+                  child: Container(
+                    width: 80,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: colorScheme.primaryContainer,
                     ),
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: colorScheme.error),
+                    child: Center(
+                      child: Text(
+                        initial,
+                        style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: colorScheme.onPrimaryContainer,
+                        ),
+                      ),
                     ),
                   ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  widget.entry.website,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 32),
+                _buildDetailCard(
+                  context,
+                  icon: Icons.person_outline,
+                  label: 'Username',
+                  value: widget.entry.username,
+                  onCopy: () =>
+                      _copyToClipboard(widget.entry.username, 'Username'),
+                ),
+                const SizedBox(height: 12),
+                _buildDetailCard(
+                  context,
+                  icon: Icons.lock_outline,
+                  label: 'Password',
+                  value: _showPassword ? widget.entry.password : '••••••••••••',
+                  onCopy: () =>
+                      _copyToClipboard(widget.entry.password, 'Password'),
+                  trailing: IconButton(
+                    icon: Icon(
+                      _showPassword
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
+                    ),
+                    onPressed: () =>
+                        setState(() => _showPassword = !_showPassword),
+                  ),
+                ),
+                if (widget.entry.notes.isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  _buildDetailCard(
+                    context,
+                    icon: Icons.notes_outlined,
+                    label: 'Notes',
+                    value: widget.entry.notes,
+                  ),
+                ],
+                const SizedBox(height: 24),
+                Text(
+                  'Created: ${_formatDate(widget.entry.createdAt)}',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: colorScheme.onSurface.withOpacity(0.6),
+                    fontSize: 12,
+                  ),
+                ),
+                Text(
+                  'Updated: ${_formatDate(widget.entry.updatedAt)}',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: colorScheme.onSurface.withOpacity(0.6),
+                    fontSize: 12,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  children: [
+                    Expanded(
+                      child: FilledButton.tonalIcon(
+                        onPressed: widget.onEdit,
+                        icon: const Icon(Icons.edit),
+                        label: const Text('Edit'),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: widget.onDelete,
+                        icon: Icon(Icons.delete, color: colorScheme.error),
+                        label: Text(
+                          'Delete',
+                          style: TextStyle(color: colorScheme.error),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(color: colorScheme.error),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -838,52 +982,48 @@ class _PasswordDetailsSheetState extends State<PasswordDetailsSheet> {
   }) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Card(
-      elevation: 0,
-      color: colorScheme.surfaceContainerHighest,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(icon, size: 20, color: colorScheme.primary),
-                const SizedBox(width: 8),
-                Text(
-                  label,
-                  style: TextStyle(
-                    color: colorScheme.primary,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.5,
+    return GlassyCard(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, size: 20, color: colorScheme.primary),
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: TextStyle(
+                  color: colorScheme.primary,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    value,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+              ),
+              if (onCopy != null)
+                IconButton.filledTonal(
+                  icon: const Icon(Icons.copy, size: 20),
+                  onPressed: onCopy,
+                  tooltip: 'Copy',
                 ),
-                if (onCopy != null)
-                  IconButton.filledTonal(
-                    icon: const Icon(Icons.copy, size: 20),
-                    onPressed: onCopy,
-                    tooltip: 'Copy',
-                  ),
-                if (trailing != null) trailing,
-              ],
-            ),
-          ],
-        ),
+              if (trailing != null) trailing,
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -989,8 +1129,19 @@ class _AddEditPasswordScreenState extends State<AddEditPasswordScreen> {
     final isEditing = widget.entry != null;
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Text(isEditing ? 'Edit Password' : 'Add Password'),
+        flexibleSpace: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(
+              decoration: BoxDecoration(
+                color: colorScheme.surface.withOpacity(0.7),
+              ),
+            ),
+          ),
+        ),
         actions: [
           FilledButton(onPressed: _save, child: const Text('Save')),
           const SizedBox(width: 8),
@@ -999,157 +1150,138 @@ class _AddEditPasswordScreenState extends State<AddEditPasswordScreen> {
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.fromLTRB(
+            16,
+            MediaQuery.of(context).padding.top + 72,
+            16,
+            16,
+          ),
           children: [
-            Card(
-              elevation: 0,
-              color: colorScheme.surfaceContainerHighest,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'ACCOUNT DETAILS',
-                      style: TextStyle(
-                        color: colorScheme.primary,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 1,
-                      ),
+            GlassyCard(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'ACCOUNT DETAILS',
+                    style: TextStyle(
+                      color: colorScheme.primary,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 1,
                     ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _websiteController,
-                      decoration: InputDecoration(
-                        labelText: 'Website / Application',
-                        hintText: 'example.com',
-                        prefixIcon: const Icon(Icons.language),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      validator: (v) => v?.trim().isEmpty ?? true
-                          ? 'Website is required'
-                          : null,
-                      textInputAction: TextInputAction.next,
+                  ),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    controller: _websiteController,
+                    decoration: const InputDecoration(
+                      labelText: 'Website / Application',
+                      hintText: 'example.com',
+                      prefixIcon: Icon(Icons.language),
                     ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _usernameController,
-                      decoration: InputDecoration(
-                        labelText: 'Username / Email',
-                        hintText: 'user@example.com',
-                        prefixIcon: const Icon(Icons.person),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      validator: (v) => v?.trim().isEmpty ?? true
-                          ? 'Username is required'
-                          : null,
-                      textInputAction: TextInputAction.next,
-                      keyboardType: TextInputType.emailAddress,
+                    validator: (v) => v?.trim().isEmpty ?? true
+                        ? 'Website is required'
+                        : null,
+                    textInputAction: TextInputAction.next,
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _usernameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Username / Email',
+                      hintText: 'user@example.com',
+                      prefixIcon: Icon(Icons.person),
                     ),
-                  ],
-                ),
+                    validator: (v) => v?.trim().isEmpty ?? true
+                        ? 'Username is required'
+                        : null,
+                    textInputAction: TextInputAction.next,
+                    keyboardType: TextInputType.emailAddress,
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 16),
-            Card(
-              elevation: 0,
-              color: colorScheme.surfaceContainerHighest,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'PASSWORD',
-                          style: TextStyle(
-                            color: colorScheme.primary,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 1,
-                          ),
-                        ),
-                        FilledButton.tonalIcon(
-                          onPressed: _useGeneratedPassword,
-                          icon: const Icon(Icons.auto_awesome, size: 18),
-                          label: const Text('Generate'),
-                          style: FilledButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 8,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _passwordController,
-                      obscureText: !_showPassword,
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        prefixIcon: const Icon(Icons.lock),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _showPassword
-                                ? Icons.visibility_off_outlined
-                                : Icons.visibility_outlined,
-                          ),
-                          onPressed: () =>
-                              setState(() => _showPassword = !_showPassword),
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
+            GlassyCard(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'PASSWORD',
+                        style: TextStyle(
+                          color: colorScheme.primary,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 1,
                         ),
                       ),
-                      validator: (v) =>
-                          v?.isEmpty ?? true ? 'Password is required' : null,
+                      FilledButton.tonalIcon(
+                        onPressed: _useGeneratedPassword,
+                        icon: const Icon(Icons.auto_awesome, size: 18),
+                        label: const Text('Generate'),
+                        style: FilledButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    controller: _passwordController,
+                    obscureText: !_showPassword,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      prefixIcon: const Icon(Icons.lock),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _showPassword
+                              ? Icons.visibility_off_outlined
+                              : Icons.visibility_outlined,
+                        ),
+                        onPressed: () =>
+                            setState(() => _showPassword = !_showPassword),
+                      ),
                     ),
-                  ],
-                ),
+                    validator: (v) =>
+                        v?.isEmpty ?? true ? 'Password is required' : null,
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 16),
-            Card(
-              elevation: 0,
-              color: colorScheme.surfaceContainerHighest,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'NOTES (OPTIONAL)',
-                      style: TextStyle(
-                        color: colorScheme.primary,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 1,
-                      ),
+            GlassyCard(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'NOTES (OPTIONAL)',
+                    style: TextStyle(
+                      color: colorScheme.primary,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 1,
                     ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _notesController,
-                      decoration: InputDecoration(
-                        labelText: 'Notes',
-                        hintText: 'Add any additional information...',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        alignLabelWithHint: true,
-                      ),
-                      maxLines: 4,
-                      textInputAction: TextInputAction.done,
+                  ),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    controller: _notesController,
+                    decoration: const InputDecoration(
+                      labelText: 'Notes',
+                      hintText: 'Add any additional information...',
+                      alignLabelWithHint: true,
                     ),
-                  ],
-                ),
+                    maxLines: 4,
+                    textInputAction: TextInputAction.done,
+                  ),
+                ],
               ),
             ),
           ],
