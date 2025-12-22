@@ -1,17 +1,26 @@
-# fassword
+# Fassword
+A simple password manager app built with Flutter.
 
-A new Flutter project.
+## Features
+- **Password Manager:** Create, edit, and delete passwords
 
-## Getting Started
+## Screenshot
+<div style="display: flex; justify-content: space-around;">
+  <img src="./screenshot/ss1.png" width="200">
+  <img src="./screenshot/ss2.png" width="200">
+  <img src="./screenshot/ss3.png" width="200">
+</div>
 
-This project is a starting point for a Flutter application.
+## Tech Stack
+- **Language:** Dart
+- **Framework:** Flutter
+- **UI:** Material Design 3
 
-A few resources to get you started if this is your first Flutter project:
+## Requirements
+- Flutter SDK
+- Minimum SDK: API 24 (Android 7.0)
+- Target SDK: API 34
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Contributing
+Feel free to open issues or submit pull requests. All contributions are welcome!
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-# fassword-app
