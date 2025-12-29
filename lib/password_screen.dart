@@ -98,173 +98,189 @@ class _AddEditPasswordScreenState extends State<AddEditPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
     final isEditing = widget.entry != null;
 
     return Scaffold(
+      backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
         title: Text(isEditing ? 'Edit Password' : 'Add Password'),
+        centerTitle: false,
         actions: [
-          FilledButton(onPressed: _save, child: const Text('Save')),
-          const SizedBox(width: 8),
+          FilledButton.icon(
+            onPressed: _save,
+            icon: const Icon(Icons.check, size: 18),
+            label: const Text('Save'),
+            style: FilledButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
         ],
       ),
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(20),
           children: [
-            Card(
-              elevation: 0,
-              color: colorScheme.surfaceContainerHighest,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'ACCOUNT DETAILS',
-                      style: TextStyle(
-                        color: colorScheme.primary,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 1,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _websiteController,
-                      decoration: InputDecoration(
-                        labelText: 'Website / Application',
-                        hintText: 'example.com',
-                        prefixIcon: const Icon(Icons.language),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      validator: (v) => v?.trim().isEmpty ?? true
-                          ? 'Website is required'
-                          : null,
-                      textInputAction: TextInputAction.next,
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _usernameController,
-                      decoration: InputDecoration(
-                        labelText: 'Username / Email',
-                        hintText: 'user@example.com',
-                        prefixIcon: const Icon(Icons.person),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      validator: (v) => v?.trim().isEmpty ?? true
-                          ? 'Username is required'
-                          : null,
-                      textInputAction: TextInputAction.next,
-                      keyboardType: TextInputType.emailAddress,
-                    ),
-                  ],
-                ),
+            Text(
+              'Account Details',
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 16),
-            Card(
-              elevation: 0,
-              color: colorScheme.surfaceContainerHighest,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'PASSWORD',
-                          style: TextStyle(
-                            color: colorScheme.primary,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 1,
-                          ),
-                        ),
-                        FilledButton.tonalIcon(
-                          onPressed: _useGeneratedPassword,
-                          icon: const Icon(Icons.auto_awesome, size: 18),
-                          label: const Text('Generate'),
-                          style: FilledButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 8,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _passwordController,
-                      obscureText: !_showPassword,
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        prefixIcon: const Icon(Icons.lock),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _showPassword
-                                ? Icons.visibility_off_outlined
-                                : Icons.visibility_outlined,
-                          ),
-                          onPressed: () =>
-                              setState(() => _showPassword = !_showPassword),
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      validator: (v) =>
-                          v?.isEmpty ?? true ? 'Password is required' : null,
-                    ),
-                  ],
+            const SizedBox(height: 12),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: theme.colorScheme.outlineVariant,
+                  width: 1,
                 ),
+                borderRadius: BorderRadius.circular(16),
+                color: theme.colorScheme.surface,
+              ),
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextFormField(
+                    controller: _websiteController,
+                    decoration: InputDecoration(
+                      labelText: 'Website / Application',
+                      hintText: 'example.com',
+                      prefixIcon: const Icon(Icons.language),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      filled: true,
+                      fillColor: theme.colorScheme.surfaceContainerHighest,
+                    ),
+                    validator: (v) => v?.trim().isEmpty ?? true
+                        ? 'Website is required'
+                        : null,
+                    textInputAction: TextInputAction.next,
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _usernameController,
+                    decoration: InputDecoration(
+                      labelText: 'Username / Email',
+                      hintText: 'user@example.com',
+                      prefixIcon: const Icon(Icons.person),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      filled: true,
+                      fillColor: theme.colorScheme.surfaceContainerHighest,
+                    ),
+                    validator: (v) => v?.trim().isEmpty ?? true
+                        ? 'Username is required'
+                        : null,
+                    textInputAction: TextInputAction.next,
+                    keyboardType: TextInputType.emailAddress,
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 16),
-            Card(
-              elevation: 0,
-              color: colorScheme.surfaceContainerHighest,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'NOTES (OPTIONAL)',
-                      style: TextStyle(
-                        color: colorScheme.primary,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 1,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _notesController,
-                      decoration: InputDecoration(
-                        labelText: 'Notes',
-                        hintText: 'Add any additional information...',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        alignLabelWithHint: true,
-                      ),
-                      maxLines: 4,
-                      textInputAction: TextInputAction.done,
-                    ),
-                  ],
+            const SizedBox(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Password',
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
+                FilledButton.icon(
+                  onPressed: _useGeneratedPassword,
+                  icon: const Icon(Icons.auto_awesome, size: 18),
+                  label: const Text('Generate'),
+                  style: FilledButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: theme.colorScheme.outlineVariant,
+                  width: 1,
+                ),
+                borderRadius: BorderRadius.circular(16),
+                color: theme.colorScheme.surface,
+              ),
+              padding: const EdgeInsets.all(20),
+              child: TextFormField(
+                controller: _passwordController,
+                obscureText: !_showPassword,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  prefixIcon: const Icon(Icons.lock),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _showPassword
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
+                    ),
+                    onPressed: () =>
+                        setState(() => _showPassword = !_showPassword),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  filled: true,
+                  fillColor: theme.colorScheme.surfaceContainerHighest,
+                ),
+                validator: (v) =>
+                    v?.isEmpty ?? true ? 'Password is required' : null,
               ),
             ),
+            const SizedBox(height: 24),
+            Text(
+              'Notes (Optional)',
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: theme.colorScheme.outlineVariant,
+                  width: 1,
+                ),
+                borderRadius: BorderRadius.circular(16),
+                color: theme.colorScheme.surface,
+              ),
+              padding: const EdgeInsets.all(20),
+              child: TextFormField(
+                controller: _notesController,
+                decoration: InputDecoration(
+                  labelText: 'Notes',
+                  hintText: 'Add any additional information...',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  alignLabelWithHint: true,
+                  filled: true,
+                  fillColor: theme.colorScheme.surfaceContainerHighest,
+                ),
+                maxLines: 4,
+                textInputAction: TextInputAction.done,
+              ),
+            ),
+            const SizedBox(height: 100),
           ],
         ),
       ),

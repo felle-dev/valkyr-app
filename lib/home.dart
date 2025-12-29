@@ -5,6 +5,7 @@ import 'package:fassword/services.dart';
 import 'package:fassword/models.dart';
 import 'package:fassword/password_detail.dart';
 import 'package:fassword/password_screen.dart';
+import 'dart:convert';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -31,6 +32,26 @@ class _HomeScreenState extends State<HomeScreen> {
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  final List<Color> _passwordColors = [
+    Colors.teal,
+    Colors.blue,
+    Colors.purple,
+    Colors.orange,
+    Colors.green,
+    Colors.pink,
+    Colors.red,
+    Colors.indigo,
+    Colors.cyan,
+    Colors.amber,
+    Colors.deepOrange,
+    Colors.lightGreen,
+  ];
+
+  Color _getColorForEntry(String id) {
+    final hash = id.hashCode;
+    return _passwordColors[hash.abs() % _passwordColors.length];
   }
 
   Future<void> _loadPasswords() async {
@@ -71,6 +92,170 @@ class _HomeScreenState extends State<HomeScreen> {
       }
       await _storage.savePasswords(_passwords);
       _loadPasswords();
+    }
+  }
+
+  Future<void> _exportPasswords() async {
+    try {
+      final jsonData = _passwords
+          .map(
+            (p) => {
+              'id': p.id,
+              'website': p.website,
+              'username': p.username,
+              'password': p.password,
+              'notes': p.notes ?? '',
+            },
+          )
+          .toList();
+
+      final jsonString = const JsonEncoder.withIndent('  ').convert(jsonData);
+
+      await Clipboard.setData(ClipboardData(text: jsonString));
+
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            icon: const Icon(Icons.check_circle, color: Colors.green),
+            title: const Text('Export Successful'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Exported ${_passwords.length} passwords.'),
+                const SizedBox(height: 12),
+                const Text(
+                  'The backup has been copied to your clipboard. Paste it into a text file to save.',
+                  style: TextStyle(fontSize: 14),
+                ),
+              ],
+            ),
+            actions: [
+              FilledButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Export failed: $e')));
+      }
+    }
+  }
+
+  Future<void> _importPasswords() async {
+    final textController = TextEditingController();
+
+    final result = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        icon: const Icon(Icons.download),
+        title: const Text('Import Passwords'),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Paste your backup JSON here:',
+                style: TextStyle(fontSize: 14),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: textController,
+                maxLines: 8,
+                decoration: InputDecoration(
+                  hintText: '[{"id":"...","website":"..."}]',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, textController.text),
+            child: const Text('Import'),
+          ),
+        ],
+      ),
+    );
+
+    if (result == null || result.isEmpty) return;
+
+    try {
+      final List<dynamic> jsonData = json.decode(result);
+
+      final confirm = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          icon: const Icon(Icons.warning_amber_rounded),
+          title: const Text('Import Passwords'),
+          content: Text(
+            'This will import ${jsonData.length} passwords. Duplicate entries will be skipped. Continue?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('Import'),
+            ),
+          ],
+        ),
+      );
+
+      if (confirm != true) return;
+
+      int imported = 0;
+      for (var item in jsonData) {
+        final id = item['id'] as String;
+
+        if (_passwords.any((p) => p.id == id)) continue;
+
+        _passwords.add(
+          PasswordEntry(
+            id: id,
+            website: item['website'] as String,
+            username: item['username'] as String,
+            password: item['password'] as String,
+            notes: (item['notes'] as String?) ?? '',
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now(),
+          ),
+        );
+        imported++;
+      }
+
+      await _storage.savePasswords(_passwords);
+      _loadPasswords();
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Imported $imported passwords successfully')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Import failed: Invalid JSON format')),
+        );
+      }
     }
   }
 
@@ -121,20 +306,76 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('Fassword'),
         centerTitle: false,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.info_outline),
-            onPressed: () {
-              showAboutDialog(
-                context: context,
-                applicationName: 'Fassword',
-                applicationVersion: '1.0.0',
-                applicationIcon: Icon(
-                  Icons.lock_rounded,
-                  size: 48,
-                  color: theme.colorScheme.primary,
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            itemBuilder: (ctx) => <PopupMenuEntry<String>>[
+              PopupMenuItem<String>(
+                value: 'export',
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.upload_file,
+                      size: 20,
+                      color: theme.colorScheme.onSurface,
+                    ),
+                    const SizedBox(width: 12),
+                    const Text('Export Passwords'),
+                  ],
                 ),
-                children: [const Text('A secure and simple password manager.')],
-              );
+              ),
+              PopupMenuItem<String>(
+                value: 'import',
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.download,
+                      size: 20,
+                      color: theme.colorScheme.onSurface,
+                    ),
+                    const SizedBox(width: 12),
+                    const Text('Import Passwords'),
+                  ],
+                ),
+              ),
+              const PopupMenuDivider(),
+              PopupMenuItem<String>(
+                value: 'about',
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.info_outline,
+                      size: 20,
+                      color: theme.colorScheme.onSurface,
+                    ),
+                    const SizedBox(width: 12),
+                    const Text('About'),
+                  ],
+                ),
+              ),
+            ],
+            onSelected: (value) {
+              if (value == 'export') {
+                _exportPasswords();
+              } else if (value == 'import') {
+                _importPasswords();
+              } else if (value == 'about') {
+                showAboutDialog(
+                  context: context,
+                  applicationName: 'Fassword',
+                  applicationVersion: '1.0.0',
+                  applicationIcon: Icon(
+                    Icons.lock_rounded,
+                    size: 48,
+                    color: theme.colorScheme.primary,
+                  ),
+                  children: [
+                    const Text('A secure and simple password manager.'),
+                  ],
+                );
+              }
             },
           ),
         ],
@@ -213,6 +454,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       final initial = entry.website.isNotEmpty
                           ? entry.website[0].toUpperCase()
                           : '?';
+                      final entryColor = _getColorForEntry(entry.id);
 
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 12),
@@ -237,7 +479,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     height: 48,
                                     decoration: BoxDecoration(
                                       border: Border.all(
-                                        color: theme.colorScheme.primary,
+                                        color: entryColor,
                                         width: 2,
                                       ),
                                       borderRadius: BorderRadius.circular(12),
@@ -248,7 +490,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 20,
-                                          color: theme.colorScheme.primary,
+                                          color: entryColor,
                                         ),
                                       ),
                                     ),
@@ -337,7 +579,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                   ),
           ),
-          const SizedBox(height: 100), // Space for FAB
+          const SizedBox(height: 100),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(

@@ -37,6 +37,8 @@ dependencies:
   flutter_secure_storage: ^10.0.0
   local_auth: ^2.3.0
   dynamic_color: ^1.8.1
+  file_picker: ^10.3.8
+  share_plus: ^12.0.1
 
 dev_dependencies:
   flutter_test:

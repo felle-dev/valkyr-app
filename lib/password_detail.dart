@@ -22,6 +22,26 @@ class PasswordDetailsSheet extends StatefulWidget {
 class _PasswordDetailsSheetState extends State<PasswordDetailsSheet> {
   bool _showPassword = false;
 
+  final List<Color> _passwordColors = [
+    Colors.teal,
+    Colors.blue,
+    Colors.purple,
+    Colors.orange,
+    Colors.green,
+    Colors.pink,
+    Colors.red,
+    Colors.indigo,
+    Colors.cyan,
+    Colors.amber,
+    Colors.deepOrange,
+    Colors.lightGreen,
+  ];
+
+  Color _getColorForEntry(String id) {
+    final hash = id.hashCode;
+    return _passwordColors[hash.abs() % _passwordColors.length];
+  }
+
   void _copyToClipboard(String text, String label) {
     Clipboard.setData(ClipboardData(text: text));
     ScaffoldMessenger.of(context).showSnackBar(
@@ -38,10 +58,11 @@ class _PasswordDetailsSheetState extends State<PasswordDetailsSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
     final initial = widget.entry.website.isNotEmpty
         ? widget.entry.website[0].toUpperCase()
         : '?';
+    final entryColor = _getColorForEntry(widget.entry.id);
 
     return DraggableScrollableSheet(
       initialChildSize: 0.7,
@@ -50,7 +71,7 @@ class _PasswordDetailsSheetState extends State<PasswordDetailsSheet> {
       expand: false,
       builder: (_, controller) => Container(
         decoration: BoxDecoration(
-          color: colorScheme.surface,
+          color: theme.colorScheme.surface,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
         ),
         child: ListView(
@@ -62,22 +83,28 @@ class _PasswordDetailsSheetState extends State<PasswordDetailsSheet> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: colorScheme.onSurface.withOpacity(0.3),
+                  color: theme.colorScheme.outlineVariant,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
             ),
             const SizedBox(height: 24),
             Center(
-              child: CircleAvatar(
-                radius: 40,
-                backgroundColor: colorScheme.primaryContainer,
-                child: Text(
-                  initial,
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: colorScheme.onPrimaryContainer,
+              child: Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  border: Border.all(color: entryColor, width: 3),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Center(
+                  child: Text(
+                    initial,
+                    style: TextStyle(
+                      fontSize: 36,
+                      fontWeight: FontWeight.bold,
+                      color: entryColor,
+                    ),
                   ),
                 ),
               ),
@@ -86,7 +113,9 @@ class _PasswordDetailsSheetState extends State<PasswordDetailsSheet> {
             Text(
               widget.entry.website,
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+              style: theme.textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 32),
             _buildDetailCard(
@@ -102,7 +131,7 @@ class _PasswordDetailsSheetState extends State<PasswordDetailsSheet> {
               icon: Icons.lock_outline,
               label: 'Password',
               value: _showPassword ? widget.entry.password : '••••••••••••',
-              onCopy: () => _copyToClipboard(widget.entry.password, 'Password'),
+
               trailing: IconButton(
                 icon: Icon(
                   _showPassword
@@ -122,43 +151,88 @@ class _PasswordDetailsSheetState extends State<PasswordDetailsSheet> {
               ),
             ],
             const SizedBox(height: 24),
-            Text(
-              'Created: ${_formatDate(widget.entry.createdAt)}',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: colorScheme.onSurface.withOpacity(0.6),
-                fontSize: 12,
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: theme.colorScheme.outlineVariant,
+                  width: 1,
+                ),
+                borderRadius: BorderRadius.circular(12),
+                color: theme.colorScheme.surfaceContainerHighest,
               ),
-            ),
-            Text(
-              'Updated: ${_formatDate(widget.entry.updatedAt)}',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: colorScheme.onSurface.withOpacity(0.6),
-                fontSize: 12,
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.calendar_today,
+                        size: 16,
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Created: ${_formatDate(widget.entry.createdAt)}',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.update,
+                        size: 16,
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Updated: ${_formatDate(widget.entry.updatedAt)}',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 24),
             Row(
               children: [
                 Expanded(
-                  child: FilledButton.tonalIcon(
+                  child: FilledButton.icon(
                     onPressed: widget.onEdit,
-                    icon: const Icon(Icons.edit),
+                    icon: const Icon(Icons.edit_outlined),
                     label: const Text('Edit'),
+                    style: FilledButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: OutlinedButton.icon(
                     onPressed: widget.onDelete,
-                    icon: Icon(Icons.delete, color: colorScheme.error),
+                    icon: Icon(
+                      Icons.delete_outline,
+                      color: theme.colorScheme.error,
+                    ),
                     label: Text(
                       'Delete',
-                      style: TextStyle(color: colorScheme.error),
+                      style: TextStyle(color: theme.colorScheme.error),
                     ),
                     style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: colorScheme.error),
+                      side: BorderSide(color: theme.colorScheme.error),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
                   ),
                 ),
@@ -178,54 +252,63 @@ class _PasswordDetailsSheetState extends State<PasswordDetailsSheet> {
     VoidCallback? onCopy,
     Widget? trailing,
   }) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
 
-    return Card(
-      elevation: 0,
-      color: colorScheme.surfaceContainerHighest,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(icon, size: 20, color: colorScheme.primary),
-                const SizedBox(width: 8),
-                Text(
-                  label,
-                  style: TextStyle(
-                    color: colorScheme.primary,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.5,
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: theme.colorScheme.outlineVariant, width: 1),
+        borderRadius: BorderRadius.circular(16),
+        color: theme.colorScheme.surface,
+      ),
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, size: 20, color: theme.colorScheme.primary),
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color: theme.colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  value,
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    value,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
+              ),
+              if (onCopy != null)
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: theme.colorScheme.primary,
+                      width: 2,
                     ),
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                ),
-                if (onCopy != null)
-                  IconButton.filledTonal(
-                    icon: const Icon(Icons.copy, size: 20),
+                  child: IconButton(
+                    icon: const Icon(Icons.copy, size: 18),
                     onPressed: onCopy,
                     tooltip: 'Copy',
+                    color: theme.colorScheme.primary,
                   ),
-                if (trailing != null) trailing,
-              ],
-            ),
-          ],
-        ),
+                ),
+              if (trailing != null) trailing,
+            ],
+          ),
+        ],
       ),
     );
   }
