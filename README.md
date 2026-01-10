@@ -1,26 +1,62 @@
-# Fassword
-A simple password manager app built with Flutter.
+[![Latest release](https://img.shields.io/github/v/release/felle-dev/fassword-app?style=for-the-badge)](https://github.com/felle-dev/fassword-app/releases)
+[![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
+[![License](https://img.shields.io/github/license/felle-dev/fassword-app?style=for-the-badge)](LICENSE)
 
-## Features
-- **Password Manager:** Create, edit, and delete passwords
+**[Fassword](https://github.com/felle-dev/fassword-app)** is a simple, intuitive password manager app built with Flutter. Securely store, manage, and access your passwords with ease.
 
-## Screenshot
-<div style="display: flex; justify-content: space-around;">
-  <img src="./screenshot/ss1.png" width="200">
-  <img src="./screenshot/ss2.png" width="200">
-  <img src="./screenshot/ss3.png" width="200">
+[![Get it on GitHub](https://img.shields.io/badge/Get%20it%20on-GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/felle-dev/fassword-app/releases)
+
+## **Features**
+
+- **Password Management** – Create, edit, and delete passwords securely
+- **User-Friendly Interface** – Intuitive design for easy navigation
+- **Privacy-First** – Your data stays on your device
+
+## **Screenshots**
+
+<div style="display: flex; justify-content: space-around; gap: 10px;">
+  <img src="./screenshot/ss1.png" width="200" alt="Password List">
+  <img src="./screenshot/ss2.png" width="200" alt="Add Password">
+  <img src="./screenshot/ss3.png" width="200" alt="Password Details">
 </div>
 
-## Tech Stack
+## **Tech Stack**
+
 - **Language:** Dart
 - **Framework:** Flutter
 - **UI:** Material Design 3
 
-## Requirements
-- Flutter SDK
-- Minimum SDK: API 24 (Android 7.0)
-- Target SDK: API 34
+## **Getting Started**
 
-## Contributing
-Feel free to open issues or submit pull requests. All contributions are welcome!
+### **Prerequisites**
+- [Flutter SDK](https://flutter.dev/docs/get-started/install) (latest stable version)
+- Android Studio / VS Code with Flutter extensions
+- Android device or emulator (API 24+)
 
+### **Installation**
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/felle-dev/fassword-app.git
+   cd fassword-app
+   ```
+2. Install dependencies:
+   ```bash
+   flutter pub get
+   ```
+3. Run the app:
+   ```bash
+   flutter run
+   ```
+
+## **Contributing**
+Contributions are what make the open-source community thrive! Feel free to:
+- Fork the project
+- Open issues for bugs or feature requests
+- Submit pull requests with improvements
+
+## **License**
+This project is licensed under the **BSD 3-Clause License** – see the [LICENSE](LICENSE) file for details.
+
+[release-badge]: https://img.shields.io/github/v/release/felle-dev/fassword-app?style=for-the-badge
+[flutter-badge]: https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white
+[license-badge]: https://img.shields.io/github/license/felle-dev/fusic-app?style=for-the-badge
