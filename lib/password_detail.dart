@@ -94,7 +94,7 @@ class _PasswordDetailsSheetState extends State<PasswordDetailsSheet> {
                 width: 80,
                 height: 80,
                 decoration: BoxDecoration(
-                  border: Border.all(color: entryColor, width: 3),
+                  color: entryColor.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Center(
@@ -114,7 +114,7 @@ class _PasswordDetailsSheetState extends State<PasswordDetailsSheet> {
               widget.entry.website,
               textAlign: TextAlign.center,
               style: theme.textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: 32),
@@ -131,7 +131,6 @@ class _PasswordDetailsSheetState extends State<PasswordDetailsSheet> {
               icon: Icons.lock_outline,
               label: 'Password',
               value: _showPassword ? widget.entry.password : '••••••••••••',
-
               trailing: IconButton(
                 icon: Icon(
                   _showPassword
@@ -154,11 +153,7 @@ class _PasswordDetailsSheetState extends State<PasswordDetailsSheet> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                border: Border.all(
-                  color: theme.colorScheme.outlineVariant,
-                  width: 1,
-                ),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(16),
                 color: theme.colorScheme.surfaceContainerHighest,
               ),
               child: Column(
@@ -208,16 +203,13 @@ class _PasswordDetailsSheetState extends State<PasswordDetailsSheet> {
                     icon: const Icon(Icons.edit_outlined),
                     label: const Text('Edit'),
                     style: FilledButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: OutlinedButton.icon(
+                  child: FilledButton.tonalIcon(
                     onPressed: widget.onDelete,
                     icon: Icon(
                       Icons.delete_outline,
@@ -227,11 +219,8 @@ class _PasswordDetailsSheetState extends State<PasswordDetailsSheet> {
                       'Delete',
                       style: TextStyle(color: theme.colorScheme.error),
                     ),
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: theme.colorScheme.error),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: theme.colorScheme.errorContainer,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
                   ),
@@ -256,9 +245,8 @@ class _PasswordDetailsSheetState extends State<PasswordDetailsSheet> {
 
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: theme.colorScheme.outlineVariant, width: 1),
         borderRadius: BorderRadius.circular(16),
-        color: theme.colorScheme.surface,
+        color: theme.colorScheme.surfaceContainerLow,
       ),
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -272,7 +260,7 @@ class _PasswordDetailsSheetState extends State<PasswordDetailsSheet> {
                 label,
                 style: theme.textTheme.labelLarge?.copyWith(
                   color: theme.colorScheme.primary,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                   letterSpacing: 0.5,
                 ),
               ),
@@ -290,20 +278,10 @@ class _PasswordDetailsSheetState extends State<PasswordDetailsSheet> {
                 ),
               ),
               if (onCopy != null)
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: theme.colorScheme.primary,
-                      width: 2,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: IconButton(
-                    icon: const Icon(Icons.copy, size: 18),
-                    onPressed: onCopy,
-                    tooltip: 'Copy',
-                    color: theme.colorScheme.primary,
-                  ),
+                IconButton.filledTonal(
+                  icon: const Icon(Icons.copy, size: 18),
+                  onPressed: onCopy,
+                  tooltip: 'Copy',
                 ),
               if (trailing != null) trailing,
             ],

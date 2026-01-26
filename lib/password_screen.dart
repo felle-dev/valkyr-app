@@ -106,16 +106,13 @@ class _AddEditPasswordScreenState extends State<AddEditPasswordScreen> {
       appBar: AppBar(
         title: Text(isEditing ? 'Edit Password' : 'Add Password'),
         centerTitle: false,
+        elevation: 0,
+        surfaceTintColor: theme.colorScheme.surface,
         actions: [
           FilledButton.icon(
             onPressed: _save,
             icon: const Icon(Icons.check, size: 18),
             label: const Text('Save'),
-            style: FilledButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
           ),
           const SizedBox(width: 16),
         ],
@@ -128,18 +125,14 @@ class _AddEditPasswordScreenState extends State<AddEditPasswordScreen> {
             Text(
               'Account Details',
               style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: 12),
             Container(
               decoration: BoxDecoration(
-                border: Border.all(
-                  color: theme.colorScheme.outlineVariant,
-                  width: 1,
-                ),
-                borderRadius: BorderRadius.circular(16),
-                color: theme.colorScheme.surface,
+                borderRadius: BorderRadius.circular(20),
+                color: theme.colorScheme.surfaceContainerLow,
               ),
               padding: const EdgeInsets.all(20),
               child: Column(
@@ -152,7 +145,8 @@ class _AddEditPasswordScreenState extends State<AddEditPasswordScreen> {
                       hintText: 'example.com',
                       prefixIcon: const Icon(Icons.language),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide: BorderSide.none,
                       ),
                       filled: true,
                       fillColor: theme.colorScheme.surfaceContainerHighest,
@@ -170,7 +164,8 @@ class _AddEditPasswordScreenState extends State<AddEditPasswordScreen> {
                       hintText: 'user@example.com',
                       prefixIcon: const Icon(Icons.person),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide: BorderSide.none,
                       ),
                       filled: true,
                       fillColor: theme.colorScheme.surfaceContainerHighest,
@@ -191,17 +186,14 @@ class _AddEditPasswordScreenState extends State<AddEditPasswordScreen> {
                 Text(
                   'Password',
                   style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-                FilledButton.icon(
+                FilledButton.tonalIcon(
                   onPressed: _useGeneratedPassword,
                   icon: const Icon(Icons.auto_awesome, size: 18),
                   label: const Text('Generate'),
                   style: FilledButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 12,
@@ -213,12 +205,8 @@ class _AddEditPasswordScreenState extends State<AddEditPasswordScreen> {
             const SizedBox(height: 12),
             Container(
               decoration: BoxDecoration(
-                border: Border.all(
-                  color: theme.colorScheme.outlineVariant,
-                  width: 1,
-                ),
-                borderRadius: BorderRadius.circular(16),
-                color: theme.colorScheme.surface,
+                borderRadius: BorderRadius.circular(20),
+                color: theme.colorScheme.surfaceContainerLow,
               ),
               padding: const EdgeInsets.all(20),
               child: TextFormField(
@@ -237,7 +225,8 @@ class _AddEditPasswordScreenState extends State<AddEditPasswordScreen> {
                         setState(() => _showPassword = !_showPassword),
                   ),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide.none,
                   ),
                   filled: true,
                   fillColor: theme.colorScheme.surfaceContainerHighest,
@@ -250,18 +239,14 @@ class _AddEditPasswordScreenState extends State<AddEditPasswordScreen> {
             Text(
               'Notes (Optional)',
               style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: 12),
             Container(
               decoration: BoxDecoration(
-                border: Border.all(
-                  color: theme.colorScheme.outlineVariant,
-                  width: 1,
-                ),
-                borderRadius: BorderRadius.circular(16),
-                color: theme.colorScheme.surface,
+                borderRadius: BorderRadius.circular(20),
+                color: theme.colorScheme.surfaceContainerLow,
               ),
               padding: const EdgeInsets.all(20),
               child: TextFormField(
@@ -270,7 +255,8 @@ class _AddEditPasswordScreenState extends State<AddEditPasswordScreen> {
                   labelText: 'Notes',
                   hintText: 'Add any additional information...',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide.none,
                   ),
                   alignLabelWithHint: true,
                   filled: true,
