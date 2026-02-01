@@ -19,7 +19,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.felle.fassword"
+        applicationId = "com.felle.valkyr"
         minSdk = flutter.minSdkVersion
         targetSdk = 36
         versionCode = flutter.versionCode

@@ -1,10 +1,10 @@
-[![Latest release](https://img.shields.io/github/v/release/felle-dev/fassword-app?style=for-the-badge)](https://github.com/felle-dev/fassword-app/releases)
+[![Latest release](https://img.shields.io/github/v/release/felle-dev/valkyr-app?style=for-the-badge)](https://github.com/felle-dev/valkyr-app/releases)
 [![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
-[![License](https://img.shields.io/github/license/felle-dev/fassword-app?style=for-the-badge)](LICENSE)
+[![License](https://img.shields.io/github/license/felle-dev/valkyr-app?style=for-the-badge)](LICENSE)
 
-**[Fassword](https://github.com/felle-dev/fassword-app)** is a simple, intuitive password manager app built with Flutter. Securely store, manage, and access your passwords with ease.
+**[Valkyr](https://github.com/felle-dev/valkyr-app)** is a simple, intuitive password manager app built with Flutter. Securely store, manage, and access your passwords with ease.
 
-[![Get it on GitHub](https://img.shields.io/badge/Get%20it%20on-GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/felle-dev/fassword-app/releases)
+[![Get it on GitHub](https://img.shields.io/badge/Get%20it%20on-GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/felle-dev/valkyr-app/releases)
 
 ## **Features**
 
@@ -36,8 +36,8 @@
 ### **Installation**
 1. Clone the repository:
    ```bash
-   git clone https://github.com/felle-dev/fassword-app.git
-   cd fassword-app
+   git clone https://github.com/felle-dev/valkyr-app.git
+   cd valkyr-app
    ```
 2. Install dependencies:
    ```bash
@@ -57,6 +57,6 @@ Contributions are what make the open-source community thrive! Feel free to:
 ## **License**
 This project is licensed under the **GNU General Public License v3.0**. See the [LICENSE](LICENSE) file for more details.
 
-[release-badge]: https://img.shields.io/github/v/release/felle-dev/fassword-app?style=for-the-badge
+[release-badge]: https://img.shields.io/github/v/release/felle-dev/valkyr-app?style=for-the-badge
 [flutter-badge]: https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white
-[license-badge]: https://img.shields.io/github/license/felle-dev/fassword-app?style=for-the-badge
+[license-badge]: https://img.shields.io/github/license/felle-dev/valkyr-app?style=for-the-badge
