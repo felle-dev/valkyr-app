@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fassword/app.dart';
+import 'package:valkyr/app.dart';
 
 void main() {
-  runApp(const FasswordApp());
+  runApp(const valkyrApp());
 }
-
-

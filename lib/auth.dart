@@ -5,7 +5,7 @@ import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
-import 'package:fassword/home.dart';
+import 'package:valkyr/home.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({Key? key}) : super(key: key);
@@ -441,7 +441,7 @@ class _AuthScreenState extends State<AuthScreen>
 
                       // App name
                       Text(
-                        'Fassword',
+                        'valkyr',
                         style: theme.textTheme.displaySmall?.copyWith(
                           fontWeight: FontWeight.bold,
                           letterSpacing: -0.5,

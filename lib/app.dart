@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:dynamic_color/dynamic_color.dart';
-import 'package:fassword/auth.dart';
+import 'package:valkyr/auth.dart';
 
-class FasswordApp extends StatelessWidget {
-  const FasswordApp({Key? key}) : super(key: key);
+class valkyrApp extends StatelessWidget {
+  const valkyrApp({Key? key}) : super(key: key);
 
   ThemeData _buildThemeData(ColorScheme colorScheme, Brightness brightness) {
     return ThemeData(
@@ -69,7 +69,7 @@ class FasswordApp extends StatelessWidget {
         }
 
         return MaterialApp(
-          title: 'Fassword',
+          title: 'valkyr',
           theme: _buildThemeData(lightColorScheme, Brightness.light),
           darkTheme: _buildThemeData(darkColorScheme, Brightness.dark),
           themeMode: ThemeMode.system,

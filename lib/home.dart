@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:fassword/services.dart';
-import 'package:fassword/models.dart';
-import 'package:fassword/password_detail.dart';
-import 'package:fassword/password_screen.dart';
+import 'package:valkyr/services.dart';
+import 'package:valkyr/models.dart';
+import 'package:valkyr/password_detail.dart';
+import 'package:valkyr/password_screen.dart';
 import 'dart:convert';
 import 'dart:ui';
 
@@ -303,7 +303,7 @@ class _HomeScreenState extends State<HomeScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('About Fassword'),
+        title: const Text('About valkyr'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -331,7 +331,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.pop(context);
               showLicensePage(
                 context: context,
-                applicationName: 'Fassword',
+                applicationName: 'valkyr',
                 applicationVersion: '1.0.0',
               );
             },
@@ -358,7 +358,7 @@ class _HomeScreenState extends State<HomeScreen> {
               pinned: true,
               flexibleSpace: FlexibleSpaceBar(
                 title: Text(
-                  'Fasswords',
+                  'valkyrs',
                   style: theme.textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),

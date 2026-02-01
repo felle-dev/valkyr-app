@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.felle.fassword"
+    namespace = "com.felle.valkyr"
     compileSdk = 36
     ndkVersion = flutter.ndkVersion
 

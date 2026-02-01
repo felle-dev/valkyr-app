@@ -1,4 +1,4 @@
-package com.felle.fassword
+package com.felle.valkyr
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 
