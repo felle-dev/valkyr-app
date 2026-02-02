@@ -12,14 +12,6 @@
 - **User-Friendly Interface** – Intuitive design for easy navigation
 - **Privacy-First** – Your data stays on your device
 
-## **Screenshots**
-
-<div style="display: flex; justify-content: space-around; gap: 10px;">
-  <img src="./screenshot/ss1.png" width="200" alt="Password List">
-  <img src="./screenshot/ss2.png" width="200" alt="Add Password">
-  <img src="./screenshot/ss3.png" width="200" alt="Password Details">
-</div>
-
 ## **Tech Stack**
 
 - **Language:** Dart

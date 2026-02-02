@@ -1,6 +1,6 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert';
-import 'package:valkyr/models.dart';
+import 'package:valkyr/model/models.dart';
 
 class SecureStorageService {
   final _storage = const FlutterSecureStorage();

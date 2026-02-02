@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:dynamic_color/dynamic_color.dart';
-import 'package:valkyr/auth.dart';
+import 'package:valkyr/auth/auth.dart';
 
 class valkyrApp extends StatelessWidget {
   const valkyrApp({Key? key}) : super(key: key);
